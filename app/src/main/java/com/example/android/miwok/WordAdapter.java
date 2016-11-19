@@ -16,11 +16,13 @@
 package com.example.android.miwok;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -30,15 +32,16 @@ import java.util.ArrayList;
  * based on a data source, which is a list of {@link Word} objects.
  */
 public class WordAdapter extends ArrayAdapter<Word>  {
-
+    private int mColorResourceId;
     /**
      * Create a new {@link WordAdapter} object.
      *
      * @param context is the current context (i.e. Activity) that the adapter is being created in.
      * @param words is the list of {@link Word}s to be displayed.
      */
-    public WordAdapter(Context context, ArrayList<Word> words) {
+    public WordAdapter(Context context, ArrayList<Word> words, int colorResourceId) {
         super(context, 0, words);
+        mColorResourceId = colorResourceId;
     }
 
     @Override
@@ -67,15 +70,28 @@ public class WordAdapter extends ArrayAdapter<Word>  {
 
         // Find the ImageView in the list_item.xml layout with the ID image.
         ImageView imageView = (ImageView) listItemView.findViewById(R.id.image);
+
+        // What should the background color be?
+        int color = ContextCompat.getColor(getContext(), mColorResourceId);
+
         // Check if an image is provided for this word or not
         if (currentWord.hasImage()) {
             // If an image is available, display the provided image based on the resource ID
             imageView.setImageResource(currentWord.getImageResourceId());
             // Make sure the view is visible
             imageView.setVisibility(View.VISIBLE);
+
+           //Get reference to TextView inside the listItemView
+            LinearLayout textContainerView = (LinearLayout) listItemView.findViewById(R.id.text_container);
+
+            //set background color
+            textContainerView.setBackgroundColor(color);
         } else {
             // Otherwise hide the ImageView (set visibility to GONE)
             imageView.setVisibility(View.GONE);
+
+            //this is the Phrases activity... set color of entire background
+            listItemView.setBackgroundColor(color);
         }
 
         // Return the whole list item layout (containing 2 TextViews) so that it can be shown in
